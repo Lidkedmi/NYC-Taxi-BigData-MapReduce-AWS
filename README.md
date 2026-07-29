@@ -1,4 +1,4 @@
-# NYC Taxi Mobility Pattern Clustering
+Markdown# NYC Taxi Mobility Pattern Clustering
 ### Iterative Distributed K-Means on Apache Hadoop & AWS EMR
 
 ![Java](https://img.shields.io/badge/Java-8-orange?style=for-the-badge&logo=java)
@@ -65,13 +65,7 @@ Each trip is represented by 10 numerical features, normalized via **z-score stan
         ├── KMeansCombiner.java # Local aggregation optimization prior to shuffle phase[cite: 13]
         ├── KMeansReducer.java  # Re-computes updated centroid coordinates[cite: 13]
         └── KMeansDriver.java   # Orchestrates iteration loops & evaluates convergence[cite: 13]
-
-#⚙️ 5. Step-by-Step Execution Guide
-### Phase 0: Data Preprocessing (Python)
-Prerequisites: Python 3.x with pandas, pyarrow, scikit-learn, matplotlib[cite: 13].
-
-BASH
-# 1. Install dependencies[cite: 13]
+⚙️ 5. Step-by-Step Execution GuidePhase 0: Data Preprocessing (Python)Prerequisites: Python 3.x with pandas, pyarrow, scikit-learn, matplotlib[cite: 13].Bash# 1. Install dependencies[cite: 13]
 pip install pandas pyarrow scikit-learn matplotlib
 
 # 2. Place downloaded Parquet files into data/raw/ directory[cite: 13]
@@ -81,21 +75,11 @@ python prepare_data.py
 
 # 4. Generate initial centroids file (initial_centroids.txt)[cite: 13]
 python make_centroids.py
-
-### Phase A: Compilation & Build (Java / Maven)
-Prerequisites: JDK 8+, Apache Maven[cite: 13].
-
-BASH
-
-# Compile and create shaded fat-JAR (~12KB application JAR)[cite: 13]
+Phase A: Compilation & Build (Java / Maven)Prerequisites: JDK 8+, Apache Maven[cite: 13].Bash# Compile and create shaded fat-JAR (~12KB application JAR)[cite: 13]
 mvn clean package
 
 # Output artifact: target/taxi-kmeans.jar[cite: 13]
-
-Phase B: Distributed Local Execution (Hadoop Multi-Node Docker)
-Runs on a 7-container Docker cluster (NameNode, ResourceManager, NodeManager, HistoryServer, 3x DataNodes)[cite: 13].
-
-# 1. Verify cluster containers are running[cite: 13]
+Phase B: Distributed Local Execution (Hadoop Multi-Node Docker)Runs on a 7-container Docker cluster (NameNode, ResourceManager, NodeManager, HistoryServer, 3x DataNodes)[cite: 13].Bash# 1. Verify cluster containers are running[cite: 13]
 docker ps
 
 # 2. Copy artifacts to NameNode container[cite: 13]
@@ -120,24 +104,9 @@ hadoop jar /tmp/taxi-kmeans.jar com.taxi.kmeans.KMeansDriver \
 
 # 6. View final output centroids[cite: 13]
 hdfs dfs -cat /taxi/output_full/iteration_8/part-r-00000
-
-
-Phase C: Cloud Execution on AWS EMRThe application uses dynamic file system resolution (path.getFileSystem(conf)), allowing the exact same JAR to run interchangeably on HDFS or Amazon S3 paths.
-1. Upload Artifacts to Amazon S3: Upload taxi-kmeans.jar to s3://<bucket>/jar/ and data files to s3://<bucket>/input/[cite: 13].
-2. Launch EMR Cluster: Deploy AWS EMR (7.x, Core Hadoop) with 1 Primary and 2 Core nodes (m5.xlarge)[cite: 13].
-3. Submit Custom JAR Step:JAR Location: s3://<bucket>/jar/taxi-kmeans.jar[cite: 13]Arguments:
-
-s3://<bucket>/input/taxi_full.csv
+Phase C: Cloud Execution on AWS EMRThe application uses dynamic file system resolution (path.getFileSystem(conf)), allowing the exact same JAR to run interchangeably on HDFS or Amazon S3 paths.  Upload Artifacts to Amazon S3: Upload taxi-kmeans.jar to s3://<bucket>/jar/ and data files to s3://<bucket>/input/[cite: 13].Launch EMR Cluster: Deploy AWS EMR (7.x, Core Hadoop) with 1 Primary and 2 Core nodes (m5.xlarge)[cite: 13].Submit Custom JAR Step:JAR Location: s3://<bucket>/jar/taxi-kmeans.jar[cite: 13]Arguments:Plaintexts3://<bucket>/input/taxi_full.csv
 s3://<bucket>/input/initial_centroids.txt
 s3://<bucket>/output
 20
 ```[cite: 13]
-
-4. Retrieve Results: Upon step completion, final centroids are stored in s3://<bucket>/output/iteration_N/[cite: 13].
-
-📈 6. Analytical Results & Cluster ProfilesFor optimal cluster separation ($k=4$), the distributed pipeline identified four distinct mobility patterns[cite: 13]:
-1. Airport / Long-Distance Trips: ~13.2 miles, ~$52.3 fare, high tip ratio (JFK/LGA/EWR transfers).
-2. Group / Multi-Passenger Rides: Average 4+ passengers, mid-week volume peaks.
-3. Standard City Trips (High Tip): Short trips (~1.9 miles), high tip ratio (~24%).
-4. Short City Trips (Low Tip / Cash): Short distance (~2.4 miles), lower recorded tip ratio (~16%, cash payments).
-
+Retrieve Results: Upon step completion, final centroids are stored in s3://<bucket>/output/iteration_N/[cite: 13].📈 6. Analytical Results & Cluster ProfilesFor optimal cluster separation ($k=4$), the distributed pipeline identified four distinct mobility patterns[cite: 13]:Airport / Long-Distance Trips: ~13.2 miles, ~$52.3 fare, high tip ratio (JFK/LGA/EWR transfers).  Group / Multi-Passenger Rides: Average 4+ passengers, mid-week volume peaks.  Standard City Trips (High Tip): Short trips (~1.9 miles), high tip ratio (~24%).  Short City Trips (Low Tip / Cash): Short distance (~2.4 miles), lower recorded tip ratio (~16%, cash payments).  
