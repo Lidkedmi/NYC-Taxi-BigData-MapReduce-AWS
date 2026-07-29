@@ -66,8 +66,8 @@ Each trip is represented by 10 numerical features, normalized via **z-score stan
         ├── KMeansReducer.java  # Re-computes updated centroid coordinates[cite: 13]
         └── KMeansDriver.java   # Orchestrates iteration loops & evaluates convergence[cite: 13]
 
-⚙️ 5. Step-by-Step Execution Guide
-Phase 0: Data Preprocessing (Python)
+#⚙️ 5. Step-by-Step Execution Guide
+### Phase 0: Data Preprocessing (Python)
 Prerequisites: Python 3.x with pandas, pyarrow, scikit-learn, matplotlib[cite: 13].
 
 BASH
@@ -82,7 +82,7 @@ python prepare_data.py
 # 4. Generate initial centroids file (initial_centroids.txt)[cite: 13]
 python make_centroids.py
 
-Phase A: Compilation & Build (Java / Maven)
+### Phase A: Compilation & Build (Java / Maven)
 Prerequisites: JDK 8+, Apache Maven[cite: 13].
 
 BASH
